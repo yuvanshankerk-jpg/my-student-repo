@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Repository — Shared Study Library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0D0B0A;
+    --card-bg: #171412;
+    --card-hover: #221D1A;
+    --border: rgba(255, 255, 255, 0.08);
+    --border-subtle: rgba(255, 255, 255, 0.04);
+    --amber: #E58B24;
+    --amber-soft: rgba(229, 139, 36, 0.15);
+    --text: #F3EDE7;
+    --text-muted: #958B82;
+    --text-dim: #605750;
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: 80px;
+  }
+
+  .wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 28px;
+  }
+
+  /* Top Navigation */
+  header.site-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 0;
+    border-bottom: 1px solid var(--border-subtle);
+    margin-bottom: 48px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    text-decoration: none;
+    color: inherit;
+  }
+  .brand-logo {
+    width: 34px;
+    height: 34px;
+    background: var(--amber);
+    color: #1A0D00;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 16px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .brand-text {
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .brand-text span {
+    font-weight: 400;
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+  nav.menu {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  nav.menu button {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: color 0.15s, background 0.15s;
+  }
+  nav.menu button:hover, nav.menu button.active {
+    color: var(--text);
+    background: var(--card-bg);
+  }
+
+  /* Hero Section */
+  .hero { margin-bottom: 44px; }
+  .badge-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--amber);
+    margin-bottom: 24px;
+  }
+  .badge-tag::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--amber);
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 40px;
+    align-items: flex-end;
+  }
+  @media (max-width: 900px) {
+    .hero-grid { grid-template-columns: 1fr; gap: 24px; }
+  }
+  h1.hero-title {
+    font-family: 'Fraunces', serif;
+    font-size: 54px;
+    line-height: 1.08;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 20px;
+  }
+  .hero-sub {
+    font-size: 15.5px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    max-width: 480px;
+  }
+  .search-box-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .search-input-container {
+    display: flex;
+    align-items: center;
+    background: #14110F;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 6px 14px;
+    transition: border-color 0.2s;
+  }
+  .search-input-container:focus-within {
+    border-color: var(--amber);
+  }
+  .search-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--amber);
+    margin-right: 12px;
+  }
+  .search-input {
+    flex: 1;
+    background: none;
+    border: none;
+    color: var(--text);
+    font-size: 14px;
+    padding: 8px 0;
+    outline: none;
+    font-family: inherit;
+  }
+  .search-input::placeholder { color: var(--text-dim); }
+  .search-meta {
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-dim);
+    text-align: right;
+  }
+
+  /* Two-tier Navigation */
+  .level-1-switch {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .main-tab {
+    background: #191613;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 9px 22px;
+    border-radius: 999px;
+    font-size: 14.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .main-tab.active {
+    background: var(--amber);
+    border-color: var(--amber);
+    color: #120A00;
+  }
+
+  .level-2-switch {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+    padding: 12px 14px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+  }
+  .sub-tab {
+    background: #14110F;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 6px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .sub-tab:hover {
+    color: var(--text);
+    border-color: rgba(229, 139, 36, 0.4);
+  }
+  .sub-tab.active {
+    background: #261D15;
+    border-color: var(--amber);
+    color: var(--amber);
+  }
+
+  /* Browse by Subject */
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  .section-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .reset-btn {
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    font-size: 13px;
+    font-family: 'JetBrains Mono', monospace;
+    cursor: pointer;
+  }
+  .reset-btn:hover { color: var(--amber); }
+
+  .subjects-carousel {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+    margin-bottom: 44px;
+  }
+  .subject-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 18px 16px;
+    cursor: pointer;
+    text-align: left;
+    transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 104px;
+  }
+  .subject-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(229, 139, 36, 0.4);
+    background: var(--card-hover);
+  }
+  .subject-card.selected {
+    border-color: var(--amber);
+    background: #1F1914;
+  }
+  .subject-code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--amber);
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+  }
+  .subject-name {
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+  .subject-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  /* Latest Materials Table */
+  .table-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .table-subtitle {
+    font-size: 12.5px;
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+    margin-top: 4px;
+  }
+  .type-filters {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .type-pill {
+    background: #191613;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .type-pill:hover { color: var(--text); }
+  .type-pill.active {
+    background: var(--amber);
+    border-color: var(--amber);
+    color: #120A00;
+    font-weight: 600;
+  }
+
+  .table-wrap {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+  table.materials-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    text-align: left;
+  }
+  table.materials-table th {
+    padding: 14px 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border-bottom: 1px solid var(--border);
+    background: #13100E;
+  }
+  table.materials-table td {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-subtle);
+    color: var(--text);
+  }
+  table.materials-table tr:last-child td { border-bottom: none; }
+  table.materials-table tr:hover td { background: var(--card-hover); }
+  .td-title { font-weight: 600; color: var(--text); }
+  .td-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--amber);
+  }
+  .td-meta {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-muted);
+    font-size: 12.5px;
+  }
+  .action-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 6px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 12.5px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .action-btn:hover {
+    border-color: var(--amber);
+    color: var(--amber);
+  }
+  .empty-row {
+    text-align: center;
+    padding: 48px !important;
+    color: var(--text-dim);
+    font-size: 14px;
+  }
+
+  /* Upload Modal */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 20px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-box {
+    background: #171412;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    max-width: 520px;
+    width: 100%;
+    padding: 32px;
+  }
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .modal-title {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    font-weight: 600;
+  }
+  .modal-close {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 22px;
+    cursor: pointer;
+  }
+  .modal-dropzone {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius-md);
+    padding: 28px 20px;
+    text-align: center;
+    margin-bottom: 20px;
+    background: #110E0C;
+    cursor: pointer;
+  }
+  .field-group { margin-bottom: 16px; }
+  .field-group label {
+    display: block;
+    font-size: 11.5px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+  .field-group input, .field-group select {
+    width: 100%;
+    background: #110E0C;
+    border: 1px solid var(--border);
+    padding: 10px 14px;
+    color: #FFF;
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    outline: none;
+  }
+  .submit-upload-btn {
+    width: 100%;
+    background: var(--amber);
+    color: #120A00;
+    border: none;
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- Top Navigation -->
+  <header class="site-nav">
+    <a href="#" class="brand" onclick="resetFilters(); return false;">
+      <div class="brand-logo">S</div>
+      <div class="brand-text">Student Repository <span>open study library</span></div>
+    </a>
+    <nav class="menu">
+      <button class="active" onclick="resetFilters()">Library</button>
+      <button onclick="openUploadModal()">Upload</button>
+      <button onclick="alert('Requests portal coming soon.')">Requests</button>
+      <button onclick="alert('Bookmarks feature is enabled.')">Bookmarks</button>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="badge-tag" id="materialsCounter">• 0 materials · no accounts</div>
+    <div class="hero-grid">
+      <div>
+        <h1 class="hero-title">Study<br>materials, open<br>to everyone.</h1>
+        <p class="hero-sub">Search PDFs, slides, notes and docs shared by students. Download instantly, no sign-up.</p>
+      </div>
+      <div class="search-box-wrap">
+        <div class="search-input-container">
+          <span class="search-label">Search</span>
+          <input type="text" class="search-input" id="mainSearch" placeholder='Try "Data Structures" or "Organic Chemistry"'>
+        </div>
+        <div class="search-meta" id="searchCountDisplay">0 of 0 shown</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tier 1: School / College Toggle -->
+  <div class="level-1-switch">
+    <button class="main-tab active" id="tabSchool" onclick="setPrimaryCategory('School')">School</button>
+    <button class="main-tab" id="tabCollege" onclick="setPrimaryCategory('College')">College</button>
+  </div>
+
+  <!-- Tier 2: Sub-options (Classes for School / Degrees for College) -->
+  <div class="level-2-switch" id="subOptionsContainer"></div>
+
+  <!-- Browse by Subject Header -->
+  <div class="section-header">
+    <div class="section-title" id="subjectHeading">Browse by subject</div>
+    <button class="reset-btn" onclick="resetFilters()">reset</button>
+  </div>
+
+  <!-- Subjects Display Grid -->
+  <div class="subjects-carousel" id="subjectGrid"></div>
+
+  <!-- Latest Materials Table Header -->
+  <div class="table-controls">
+    <div>
+      <div class="section-title">Latest materials</div>
+      <div class="table-subtitle">subject / type / size / rating / downloads</div>
+    </div>
+    <div class="type-filters">
+      <button class="type-pill active" onclick="filterType('All', this)">All</button>
+      <button class="type-pill" onclick="filterType('PDF', this)">PDF</button>
+      <button class="type-pill" onclick="filterType('Doc', this)">Doc</button>
+      <button class="type-pill" onclick="filterType('Slides', this)">Slides</button>
+      <button class="type-pill" onclick="filterType('Notes', this)">Notes</button>
+      <button class="type-pill" onclick="filterType('Images', this)">Images</button>
+    </div>
+  </div>
+
+  <!-- Materials Table -->
+  <div class="table-wrap">
+    <table class="materials-table">
+      <thead>
+        <tr>
+          <th>TITLE</th>
+          <th>SUBJECT</th>
+          <th>TYPE</th>
+          <th>SIZE</th>
+          <th>RATING</th>
+          <th>ACTION</th>
+        </tr>
+      </thead>
+      <tbody id="materialsBody">
+        <tr>
+          <td colspan="6" class="empty-row">Loading repository records...</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Upload Modal -->
+<div class="modal-overlay" id="uploadModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">Upload Material</div>
+      <button class="modal-close" onclick="closeUploadModal()">&times;</button>
+    </div>
+    <div class="modal-dropzone" onclick="document.getElementById('modalFileInput').click()">
+      <div style="font-size: 14px; font-weight:600; margin-bottom: 4px;">Click to select file</div>
+      <div style="font-size: 12px; color: var(--text-dim);">PDFs, DOCX, PPT slides or images</div>
+      <input type="file" id="modalFileInput" style="display:none">
+    </div>
+    <div class="field-group">
+      <label>DOCUMENT TITLE</label>
+      <input type="text" id="modalTitle" placeholder="e.g. Data Structures Unit 2 Trees & Graphs">
+    </div>
+    <div class="field-group">
+      <label>TARGET SUBJECT</label>
+      <select id="modalSubjectSelect"></select>
+    </div>
+    <div class="field-group">
+      <label>YOUR NAME (OPTIONAL)</label>
+      <input type="text" id="modalUploader" placeholder="e.g. Yuvan S.">
+    </div>
+    <button class="submit-upload-btn" id="modalUploadBtn" onclick="triggerUpload()">Upload Document</button>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-storage-compat.js"></script>
+<script>
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyCJ1OJ-TvrCFVbhOW0GLzaneY0Hfi0cu0U",
+  authDomain: "student-repository-c6042.firebaseapp.com",
+  projectId: "student-repository-c6042",
+  storageBucket: "student-repository-c6042.firebasestorage.app",
+  messagingSenderId: "967284009027",
+  appId: "1:967284009027:web:e8371724c3b984bbb6ccf6"
+};
+
+const FIREBASE_CONFIGURED = FIREBASE_CONFIG.apiKey && !FIREBASE_CONFIG.apiKey.startsWith('PASTE_');
+let db = null, storageRef = null;
+if (FIREBASE_CONFIGURED){
+  firebase.initializeApp(FIREBASE_CONFIG);
+  db = firebase.firestore();
+  storageRef = firebase.storage().ref();
+}
+
+// Complete Hierarchy Structure for School & College
+const REPOSITORY_TREE = {
+  School: {
+    "All School": [
+      { code: "MATH", name: "Mathematics" },
+      { code: "PHYS", name: "Physics" },
+      { code: "CHEM", name: "Chemistry" },
+      { code: "BIO",  name: "Biology" },
+      { code: "CS",   name: "Computer Science" },
+      { code: "HIST", name: "History & Civics" },
+      { code: "GEOG", name: "Geography" },
+      { code: "ENG",  name: "English Language" },
+      { code: "HIN",  name: "Hindi" }
+    ],
+    "Classes 9 & 10": [
+      { code: "MATH10", name: "Class 10 Mathematics" },
+      { code: "SCI10",  name: "Class 10 Science" },
+      { code: "SST10",  name: "Social Studies" },
+      { code: "ENG10",  name: "English Literature" },
+      { code: "IT10",   name: "Information Technology" }
+    ],
+    "Classes 11 & 12 (Science)": [
+      { code: "PHY12", name: "Class 12 Physics" },
+      { code: "CHE12", name: "Class 12 Chemistry" },
+      { code: "MAT12", name: "Class 12 Mathematics" },
+      { code: "BIO12", name: "Class 12 Biology" },
+      { code: "CS12",  name: "Computer Science (Python)" }
+    ],
+    "Classes 11 & 12 (Commerce)": [
+      { code: "ACC12", name: "Accountancy" },
+      { code: "BST12", name: "Business Studies" },
+      { code: "ECO12", name: "Economics" },
+      { code: "MAT12", name: "Applied Mathematics" }
+    ]
+  },
+  College: {
+    "BCA": [
+      { code: "CPROG", name: "Programming in C/C++" },
+      { code: "DS",    name: "Data Structures" },
+      { code: "DBMS",  name: "Database Management Systems" },
+      { code: "NET",   name: "Computer Networks" },
+      { code: "OS",    name: "Operating Systems" },
+      { code: "WEB",   name: "Web Development (HTML/JS/React)" },
+      { code: "SE",    name: "Software Engineering" },
+      { code: "PYTHON",name: "Python Programming" }
+    ],
+    "BBA": [
+      { code: "MGT",   name: "Principles of Management" },
+      { code: "MKT",   name: "Marketing Management" },
+      { code: "FIN",   name: "Financial Accounting" },
+      { code: "OB",    name: "Organizational Behavior" },
+      { code: "BECO",  name: "Business Economics" },
+      { code: "BLAW",  name: "Business Law" },
+      { code: "HRM",   name: "Human Resource Management" }
+    ],
+    "B.Com": [
+      { code: "FACC",  name: "Financial Accounting" },
+      { code: "CORP",  name: "Corporate Accounting" },
+      { code: "TAX",   name: "Income Tax Law & Practice" },
+      { code: "STAT",  name: "Business Statistics" },
+      { code: "AUDIT", name: "Auditing" },
+      { code: "GST",   name: "Goods & Services Tax" }
+    ],
+    "BSc": [
+      { code: "PHYS",  name: "Physics (Mechanics/Optics)" },
+      { code: "CHEM",  name: "Organic & Physical Chemistry" },
+      { code: "MATH",  name: "Calculus & Linear Algebra" },
+      { code: "CS",    name: "Computer Science" },
+      { code: "BOT",   name: "Botany" },
+      { code: "ZOO",   name: "Zoology" }
+    ],
+    "BA": [
+      { code: "HIST",  name: "Indian & World History" },
+      { code: "POL",   name: "Political Science" },
+      { code: "ECO",   name: "Macro & Micro Economics" },
+      { code: "SOC",   name: "Sociology" },
+      { code: "ENG",   name: "English Literature" },
+      { code: "PSY",   name: "Psychology" }
+    ]
+  }
+};
+
+let currentCategory = "School";
+let currentSubCategory = "All School";
+let selectedSubject = null;
+let selectedType = "All";
+let searchQuery = "";
+let allFiles = [];
+
+function setPrimaryCategory(cat) {
+  currentCategory = cat;
+  currentSubCategory = Object.keys(REPOSITORY_TREE[cat])[0];
+  selectedSubject = null;
+  document.getElementById('tabSchool').classList.toggle('active', cat === 'School');
+  document.getElementById('tabCollege').classList.toggle('active', cat === 'College');
+  renderSubCategoryOptions();
+  renderSubjectGrid();
+  renderMaterials();
+}
+
+function setSubCategory(sub) {
+  currentSubCategory = sub;
+  selectedSubject = null;
+  renderSubCategoryOptions();
+  renderSubjectGrid();
+  renderMaterials();
+}
+
+function renderSubCategoryOptions() {
+  const container = document.getElementById('subOptionsContainer');
+  const subs = Object.keys(REPOSITORY_TREE[currentCategory]);
+  container.innerHTML = subs.map(sub => `
+    <button class="sub-tab ${currentSubCategory === sub ? 'active' : ''}" onclick="setSubCategory('${sub}')">${sub}</button>
+  `).join('');
+  document.getElementById('subjectHeading').textContent = `Browse by subject (${currentCategory} → ${currentSubCategory})`;
+}
+
+function renderSubjectGrid() {
+  const grid = document.getElementById('subjectGrid');
+  const subjects = REPOSITORY_TREE[currentCategory][currentSubCategory] || [];
+  grid.innerHTML = subjects.map(s => {
+    const isSel = selectedSubject === s.name;
+    const count = allFiles.filter(f => f.subject === s.name).length;
+    return `
+      <div class="subject-card ${isSel ? 'selected' : ''}" onclick="selectSubject('${s.name}')">
+        <div>
+          <div class="subject-code">${s.code}</div>
+          <div class="subject-name">${s.name}</div>
+        </div>
+        <div class="subject-count">${count} files</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function selectSubject(name) {
+  selectedSubject = selectedSubject === name ? null : name;
+  renderSubjectGrid();
+  renderMaterials();
+}
+
+function resetFilters() {
+  selectedSubject = null;
+  selectedType = "All";
+  searchQuery = "";
+  document.getElementById('mainSearch').value = "";
+  document.querySelectorAll('.type-pill').forEach(b => b.classList.toggle('active', b.textContent === 'All'));
+  renderSubjectGrid();
+  renderMaterials();
+}
+
+function filterType(type, btn) {
+  selectedType = type;
+  document.querySelectorAll('.type-pill').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderMaterials();
+}
+
+function formatBytes(bytes) {
+  if (!bytes || bytes === 0) return '0 B';
+  const k = 1024;
+  const sizes = ['B', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+}
+
+function detectFileType(name) {
+  const ext = name.split('.').pop().toLowerCase();
+  if (ext === 'pdf') return 'PDF';
+  if (['doc', 'docx'].includes(ext)) return 'Doc';
+  if (['ppt', 'pptx'].includes(ext)) return 'Slides';
+  if (['txt', 'md'].includes(ext)) return 'Notes';
+  if (['jpg', 'jpeg', 'png', 'webp'].includes(ext)) return 'Images';
+  return 'PDF';
+}
+
+function renderMaterials() {
+  const tbody = document.getElementById('materialsBody');
+  let filtered = allFiles;
+
+  if (selectedSubject) {
+    filtered = filtered.filter(f => f.subject === selectedSubject);
+  }
+
+  if (selectedType !== 'All') {
+    filtered = filtered.filter(f => detectFileType(f.name) === selectedType);
+  }
+
+  if (searchQuery.trim()) {
+    const q = searchQuery.toLowerCase();
+    filtered = filtered.filter(f => 
+      f.name.toLowerCase().includes(q) || 
+      (f.subject && f.subject.toLowerCase().includes(q))
+    );
+  }
+
+  document.getElementById('materialsCounter').textContent = `• ${allFiles.length} materials · no accounts`;
+  document.getElementById('searchCountDisplay').textContent = `${filtered.length} of ${allFiles.length} shown`;
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" class="empty-row">No matching materials found for this selection.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map(f => {
+    const type = detectFileType(f.name);
+    return `
+      <tr>
+        <td class="td-title">${escapeHtml(f.name)}</td>
+        <td><span class="td-tag">${escapeHtml(f.subject || 'General')}</span></td>
+        <td class="td-meta">${type}</td>
+        <td class="td-meta">${formatBytes(f.size)}</td>
+        <td class="td-meta">★ 5.0</td>
+        <td><a class="action-btn" href="${f.url}" target="_blank" rel="noopener">Download</a></td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function escapeHtml(s) {
+  return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// Populate Modal Subjects dynamically
+function populateModalSubjects() {
+  const select = document.getElementById('modalSubjectSelect');
+  let optionsHtml = '';
+  Object.keys(REPOSITORY_TREE).forEach(cat => {
+    Object.keys(REPOSITORY_TREE[cat]).forEach(sub => {
+      optionsHtml += `<optgroup label="${cat} — ${sub}">`;
+      REPOSITORY_TREE[cat][sub].forEach(s => {
+        optionsHtml += `<option value="${s.name}">${s.name} (${s.code})</option>`;
+      });
+      optionsHtml += `</optgroup>`;
+    });
+  });
+  select.innerHTML = optionsHtml;
+}
+
+// Live listener to Firestore
+if (FIREBASE_CONFIGURED) {
+  db.collection('repository_files').orderBy('uploadedAt', 'desc').onSnapshot(snap => {
+    allFiles = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderSubjectGrid();
+    renderMaterials();
+  });
+}
+
+// Search input binding
+document.getElementById('mainSearch').addEventListener('input', (e) => {
+  searchQuery = e.target.value;
+  renderMaterials();
+});
+
+// Modal Logic
+function openUploadModal() {
+  populateModalSubjects();
+  document.getElementById('uploadModal').classList.add('open');
+}
+function closeUploadModal() {
+  document.getElementById('uploadModal').classList.remove('open');
+}
+
+async function triggerUpload() {
+  const fileInput = document.getElementById('modalFileInput');
+  const titleInput = document.getElementById('modalTitle');
+  const subjectSelect = document.getElementById('modalSubjectSelect');
+  const uploaderInput = document.getElementById('modalUploader');
+  const btn = document.getElementById('modalUploadBtn');
+
+  if (!fileInput.files.length) {
+    alert('Please select a document to upload.');
+    return;
+  }
+  const file = fileInput.files[0];
+  const subject = subjectSelect.value;
+  const fileName = titleInput.value.trim() ? `${titleInput.value.trim()}.${file.name.split('.').pop()}` : file.name;
+
+  btn.disabled = true;
+  btn.textContent = 'Uploading...';
+
+  try {
+    const path = `repository/${Date.now()}_${file.name}`;
+    const ref = storageRef.child(path);
+    const snap = await ref.put(file);
+    const url = await snap.ref.getDownloadURL();
+
+    await db.collection('repository_files').add({
+      name: fileName,
+      subject: subject,
+      size: file.size,
+      url: url,
+      storagePath: path,
+      uploadedBy: uploaderInput.value.trim() || 'Anonymous Student',
+      uploadedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    closeUploadModal();
+    fileInput.value = "";
+    titleInput.value = "";
+    btn.disabled = false;
+    btn.textContent = 'Upload Document';
+  } catch (err) {
+    console.error(err);
+    alert('Upload failed. Please check network/rules and retry.');
+    btn.disabled = false;
+    btn.textContent = 'Upload Document';
+  }
+}
+
+// Initialize on page load
+setPrimaryCategory('School');
+populateModalSubjects();
+renderMaterials();
+</script>
+</body>
+</html>
